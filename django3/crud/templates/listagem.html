@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<meta http-equiv='cache-control' content='no-cache'>
+	<meta http-equiv='expires' content='0'>
+	<meta http-equiv='pragma' content='no-cache'>
+	<title>Listagem</title>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.4.1/jspdf.debug.js" 
+	integrity="sha384-THVO/sM0mFD9h7dfSndI6TS0PgAGavwKvB5hAxRRvc0o9cPLohB0wb/PTA7LdUHs" 
+	crossorigin="anonymous"></script>
+</head>
+<body>
+	<nav class="navbar navbar-expand-sm bg-dark">
+		<ul class="navbar-nav">
+			<li class="nav-item">
+				<a class="nav-link" href="/crud/listagem">LISTAGEM</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/crud/insercao">NOVO</a>
+			</li>
+			
+		</ul>
+	</nav>
+	<br>
+	<div class="container">
+		<h2>{{titulo}}</h2>
+		<form action="/crud/consulta/" method="POST" name="frm_consulta" class="ml-3">{% csrf_token %}
+			<div class="form-group">
+				<div class="row">
+					<input type="text" class="form-control col-md-5" name="consulta"
+					placeholder="Digite aqui a sua consulta">
+					<select class="form-control col-md-2" name="campo">
+						<option value="cliente" align="center">Cliente</option>
+						<option value="numero_conteiner" align="center">Número do Contêiner</option>
+						<option value="tipo"align="center">Tipo</option>
+						<option value="status"align="center">Status</option>
+						<option value="categoria" align="center">Categoria</option>
+						<option value="movimentacao" align="center">Tipo de Movimentação</option>
+						<option value="data_inicial" align="center">Data Inicial</option>
+						<option value="data_final" align="center">Data Final</option>
+						
+						
+						
+					</select>
+					<button type="submit" class="btn btn-success">Consultar</button>
+				</div>
+			</div>
+		</form>
+		<div style="overflow-y: scroll; height: 300px; width: 110%;" align="center">
+			<table class="table">
+				<thead>
+					<tr>
+						<th><a href="/crud/ordenacao/id">ID</a></th>
+						<th><a href="/crud/ordenacao/cliente">Cliente</a></th>
+						<th><a href="/crud/ordenacao/numero_conteiner">Número do Contêiner</a></th>
+						<th><a href="/crud/ordenacao/tipo">Tipo</a></th>
+						<th><a href="/crud/ordenacao/status">Status</a></th>
+						<th><a href="/crud/ordenacao/categoria">Categoria</a></th>
+						<th><a href="/crud/ordenacao/movimentacao">Movimentação</a></th>
+						<th><a href="/crud/ordenacao/data_inicial">Data Inicial</a></th>
+						<th><a href="/crud/ordenacao/data_final">Data Final</a></th>
+						
+						
+					</tr>
+				</thead>
+				<tbody>
+					{% for pessoa in pessoas %}
+					<tr>
+						<td nowrap="true">
+							<a href="/crud/listagem/{{pessoa.id}}">{{pessoa.id}}</a>
+						</td>
+						<td nowrap="true">{{pessoa.cliente}}</td>
+						<td nowrap="true">{{pessoa.numero_conteiner}}</td>
+						<td nowrap="true">{{pessoa.tipo}}</td>
+						<td nowrap="true">{{pessoa.status}}</td>
+						<td nowrap="true">{{pessoa.categoria}}</td>
+						<td nowrap="true">{{pessoa.movimentacao}}</td>
+						<td nowrap="true">{{pessoa.data_inicial}}</td>
+						<td nowrap="true">{{pessoa.data_final}}</td>
+						
+						
+						<td nowrap="true" align="right">
+							<a href="/crud/edicao/{{pessoa.id}}"
+							class="btn btn-primary" role="button">
+								Editar
+							</a>
+							<a href="/crud/delecao/{{pessoa.id}}"
+							class="btn btn-danger" role="button">
+								DELETAR
+							</a>
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<a href="#" style="float: right;" onclick="relatorio()">Imprimir Relatório</a>
+		<textarea id="dados" style="display: none;">
+			{% for pessoa in pessoas %}
+				{{pessoa.cliente}}|{{pessoa.numero_conteiner}}|{{pessoa.tipo}}|{{pessoa.status}}|{{pessoa.categoria}}|{{pessoa.movimentacao}}|{{pessoa.data_inicial}}|{{pessoa.data_final}}#
+			{% endfor %}
+		</textarea>
+		<script>
+			function relatorio() {
+				const doc = new jsPDF({orientation: 'landscape'});
+
+				const texto = document.getElementById('dados').innerText;
+				const arrLinhas = texto.split('#');
+				let conteudo = 'Relatório de Contêiners\n\n';
+				for(let linha=0; linha<arrLinhas.length; linha++) {
+					let arrColunas = arrLinhas[linha].split('|');
+					arrColunas[0] = arrColunas[0].trim().padEnd(10, '*');
+					if(arrColunas[0].indexOf('*') > 0) {
+						conteudo += `cliente: ${arrColunas[0]} - `+
+									`Número: ${arrColunas[1]} - `+
+									`Tipo: ${arrColunas[2]} - `+
+									`Status: ${arrColunas[3]} - `+
+									`Categoria: ${arrColunas[4]} - `+
+									`Movimentacao: ${arrColunas[5]} - `+
+									`Início: ${arrColunas[6]} - `+
+									`Final:  ${arrColunas[7]}\n`;
+					}
+				}
+
+				doc.setFontSize(7);
+				doc.setFont('Courier');
+				doc.text(conteudo, 5, 15);
+				doc.save('relatorio.pdf');
+			}
+		</script>
+	</div>
+</body>
+</html>

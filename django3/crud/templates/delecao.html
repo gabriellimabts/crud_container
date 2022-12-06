@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<meta http-equiv='cache-control' content='no-cache'>
+	<meta http-equiv='expires' content='0'>
+	<meta http-equiv='pragma' content='no-cache'>
+	<title>Deleção</title>
+</head>
+<body>
+	<nav class="navbar navbar-expand-sm bg-dark">
+		<ul class="navbar-nav">
+			<li class="nav-item">
+				<a class="nav-link" href="/crud/listagem">LISTAGEM</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/crud/insercao">NOVO</a>
+			</li>
+			
+		</ul>
+	</nav>
+	<br>
+	<div class="container">
+		<h2>{{titulo}}</h2>
+		<form action="/crud/salvar_delecao/" method="POST" name="frm_delecao" class="ml-3">
+		{% csrf_token %}
+		<input type="hidden" name="id" value="{{pessoa.id}}">
+			<div class="form-group">
+				<label for="cliente">Cliente:</label>
+				<input type="text" class="form-control" name="cliente" value="{{pessoa.cliente}}" disabled="true" align="center">
+			</div>
+			<div class="form-group">
+				<label for="numero_conteiner">Número do Contêiner:</label>
+				<input type="text" class="form-control" name="numero_conteiner" value="{{pessoa.numero_conteiner}}" disabled="true" align="center">
+			</div>
+			<div class="form-group">
+				<select class="form-control" name="tipo" disabled="true" align="center">
+					<option value="20">20</option>
+					<option value="40">40</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<select class="form-control" name="status" disabled="true" align="center">
+					<option value="Cheio">Cheio</option>
+					<option value="Vazio">Vazio</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<select class="form-control" name="categoria" disabled="true" align="center">
+					<option value="Importação">Importação</option>
+					<option value="Exportação">Exportação</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<select class="form-control" name="movimentacao" disabled="true" align="center">
+					<option value="Embarque">Embarque</option>
+					<option value="Descarga">Descarga</option>
+					<option value="Gate_In">Gate In</option>
+					<option value="Gate_Out">Gate Out</option>
+					<option value="Reposicionamento">Reposicionamento</option>
+					<option value="Pesagem">Pesagem</option>
+					<option value="Scanner">Scanner</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="data_inicial">Data Inicial:</label>
+				<input type="date" class="form-control" name="data_inicial" value="{{pessoa.data_inicial}}" disabled="true" align="center">
+			</div>
+			<div class="form-group">
+				<label for="data_final">Data Final:</label>
+				<input type="date"  class="form-control" name="data_final" value="{{pessoa.data_final}}" disabled="true" align="center">
+			</div>
+
+			
+
+			<a href="/listagem" class="btn btn-secondary" role="button">Cancelar</a>
+			<button type="submit" class="btn btn-danger">Deletar</button>
+		</form>
+	</div>
+
+</body>
+</html>
